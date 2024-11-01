@@ -1,8 +1,12 @@
 const express = require("express");
-const { subscribeUser } = require("../controllers/subscribeController");
+const {
+  unsubscribeUser,
+  subscribeUser,
+} = require("../controllers/subscribeController");
 
 const router = express.Router();
 
-router.post("/subscribe", subscribeUser);
+router.post("/subscribe", subscribeUser); // user subscription route
+router.post("/unsubscribe", unsubscribeUser); // user unsubscription route
 
 module.exports = router;

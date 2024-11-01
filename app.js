@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const connectDB = require("./config/db");
-// const User = require("./models/user");
 
 // Middleware
 app.use(express.json());
