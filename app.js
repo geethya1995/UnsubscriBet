@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const connectDB = require("./db/dbConnect");
+const Users = require("./db/collections/userModel");
 // const bodyParser = require('body-parser');
 
 // body parser configuration
@@ -14,5 +16,8 @@ app.get("/", (request, response, next) => {
   next();
 });
 
+// connecting to the MongoDB Atlas
+connectDB();
+Users();
 
 module.exports = app;
