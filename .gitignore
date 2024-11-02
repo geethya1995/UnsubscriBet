@@ -1,3 +1,3 @@
 node_modules
-.env.development
-/lambda/sendNewsLetter.js
+/server/config/.env.development
+server/lambda
