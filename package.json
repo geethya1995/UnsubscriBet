@@ -2,26 +2,19 @@
   "name": "unsubscribet",
   "version": "1.0.0",
   "description": "Demo platform to manage customer preference on their subscriptions",
-  "main": "index.js",
+  "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" "
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
+    "install-client": "cd client && npm install && npm run build && cd ..",
+    "install-server": "cd server && npm install && cd .. ",
+    "heroku-postbuild": "npm run install-server"
   },
   "keywords": [
     "example",
     "heroku"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/geethya1995/UnsubscriBet.git"
-  },
-  "author": "Geethya Tennakoon",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/geethya1995/UnsubscriBet/issues"
-  },
-  "homepage": "https://github.com/geethya1995/UnsubscriBet#readme",
   "devDependencies": {
-    "concurrently": "^9.0.1"
-  }
+      "concurrently": "^9.0.1"
+    }
 }
