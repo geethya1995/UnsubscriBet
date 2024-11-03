@@ -9,8 +9,18 @@ const userPreferenceSchema = new mongoose.Schema(
     },
     reasonForUnsubscribing: {
       type: String,
-      enums: ["spam", "no longer interested", "too many emails", "other"],
+      enums: [
+        "Privacy concerns",
+        "Too many emails",
+        "Content not relevant",
+        "Found a better service",
+        "No longer interested in SportsBet",
+        "Other",
+      ],
       required: true,
+    },
+    moreInfo: {
+      type: String,
     },
     unsubscribedAt: {
       type: Date,

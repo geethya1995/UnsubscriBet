@@ -3,7 +3,7 @@ const UserPreferences = require("../models/userPreference");
 
 // User subscription controller
 exports.subscribeUser = async (req, res) => {
-  const { firstName, lastName, email } = req.body;
+  const { name, email } = req.body;
 
   try {
     const existingUser = await Users.findOne({ email });
@@ -24,7 +24,7 @@ exports.subscribeUser = async (req, res) => {
     }
 
     // If the user does not exist, create a new user
-    const newUser = new Users({ email, firstName, lastName });
+    const newUser = new Users({ email, name });
     await newUser.save();
     return res.status(201).json({
       message: "User created and subscription activated!",
@@ -41,27 +41,34 @@ exports.subscribeUser = async (req, res) => {
 
 // User unsubscription controller
 exports.unsubscribeUser = async (req, res) => {
-  const { email, reasonForUnsubscribing } = req.body;
+  const { email, reasonForUnsubscribing, moreInfo } = req.body;
 
   try {
     const existingUser = await Users.findOne({ email });
 
     // If the user exists and is subscribing the newsletter
     if (existingUser) {
-      // Deactivate the subscription in user collection
-      existingUser.isSubscribed = false;
-      await existingUser.save();
+      if (existingUser.isSubscribed) {
+        // Deactivate the subscription in user collection
+        existingUser.isSubscribed = false;
+        await existingUser.save();
 
-      // Add a new user preference on unsubscription reason
-      const userPreference = new UserPreferences({
-        userId: existingUser._id,
-        reasonForUnsubscribing,
-      });
-      await userPreference.save();
+        // Add a new user preference on unsubscription reason
+        const userPreference = new UserPreferences({
+          userId: existingUser._id,
+          reasonForUnsubscribing,
+          moreInfo,
+        });
+        await userPreference.save();
 
-      return res
-        .status(200)
-        .json({ message: "User subscription deactivated." });
+        return res
+          .status(200)
+          .json({ message: "User subscription deactivated." });
+      } else {
+        return res
+          .status(201)
+          .json({ message: "User is already unsubscribed." });
+      }
     } else {
       return res.status(404).json({ message: "User not found." });
     }

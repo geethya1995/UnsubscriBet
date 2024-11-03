@@ -14,14 +14,9 @@ const userSchema = new mongoose.Schema(
         "You have already subscribed to our newsletter. Thank you!",
       ],
     },
-    firstName: {
+    name: {
       type: String,
-      required: [true, "Please provide your first name!"],
-      unique: false,
-    },
-    lastName: {
-      type: String,
-      required: false,
+      required: [true, "Please provide your name!"],
       unique: false,
     },
     isSubscribed: {
