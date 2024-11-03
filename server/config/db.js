@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-require("dotenv").config({ path: "config/.env.development" });
+require("dotenv").config({ path: ".env.development" });
 
 // Generating the connection URL
 const username = process.env.DB_USERNAME;

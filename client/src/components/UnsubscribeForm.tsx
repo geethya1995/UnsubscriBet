@@ -100,7 +100,7 @@ const UnsubscribeForm = () => {
         setErrorMessage(
           "You have not subscribed to our newsletter with " +
             email +
-            ". Please enter the correct Email!"
+            ". Please enter the correct email!"
         );
       }
     } else {

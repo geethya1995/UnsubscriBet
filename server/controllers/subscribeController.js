@@ -1,6 +1,6 @@
 const Users = require("../models/user");
 const UserPreferences = require("../models/userPreference");
-require("dotenv").config({ path: "config/.env.development" });
+require("dotenv").config({ path: ".env.development" });
 const jwt = require("jsonwebtoken");
 
 // User subscription controller

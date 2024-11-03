@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/api/subscribe" element={<Subscribe />} />
+        <Route path="/" element={<Subscribe />} />
         <Route path="/api/unsubscribe" element={<Unsubscribe />} />
       </Routes>
     </>

@@ -31,7 +31,7 @@ const SubscribeForm = () => {
     const response = await SubscribeService(email, name);
     if (response.status === 200) {
       if (response.data.message == "User is already subscribed.") {
-        setSuccessMessage("You are already subscribing our Newsletter!");
+        setSuccessMessage("You are already subscribed to our Newsletter!");
       } else {
         setSuccessMessage(
           "Welcome back " +

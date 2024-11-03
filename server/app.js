@@ -28,6 +28,6 @@ app.get("/", (request, response, next) => {
   next();
 });
 
-app.use("/api", require("./routes/subscribeRoutes"));
+app.use("/", require("./routes/subscribeRoutes"));
 
 module.exports = app;
