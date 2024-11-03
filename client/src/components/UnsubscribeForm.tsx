@@ -10,7 +10,8 @@ import { useState } from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-// import { Link } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import UnsubscribeService from "../services/UnsubscribeService";
 
 const reasonsList = [
   "Privacy concerns",
@@ -26,6 +27,8 @@ const UnsubscribeForm = () => {
   const [otherReason, setOtherReason] = useState("");
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -58,14 +61,30 @@ const UnsubscribeForm = () => {
     return isValidEmail && hasSelectedReasons && otherReasonRequired;
   };
 
-  // TODO: Handle Submit as a separate service
-  const handleSubmit = async () => {
-    const unsubscribeData = {
-      email: email,
-      reasons: [...selectedReasons, otherReason].filter(Boolean),
-    };
-    console.log(unsubscribeData);
-    alert("User unsubscribed successfully!");
+  const handleUnsubscribe = async () => {
+    const response = await UnsubscribeService(
+      email,
+      selectedReasons,
+      otherReason
+    );
+
+    if (response.status === 200) {
+      setSuccessMessage(
+        "Successfully unsubscribed! You will no longer receive our weekly newsletter."
+      );
+    } else if (response.status === 201) {
+      if (response.data.message === "User is already unsubscribed.") {
+        setSuccessMessage("You have already unsubscribed from our newsletter!");
+      } else {
+        setErrorMessage(
+          "You have not subscribed to our newsletter with " +
+            email +
+            ". Please enter the correct Email!"
+        );
+      }
+    } else {
+      setErrorMessage("Error occurred while unsubscribing. Please try again!");
+    }
   };
 
   return (
@@ -79,6 +98,17 @@ const UnsubscribeForm = () => {
           alignItems: "center",
         }}
       >
+        {successMessage && (
+          <Alert severity="success" sx={{ width: "100%", mb: 2 }}>
+            {successMessage}
+          </Alert>
+        )}
+        {errorMessage && (
+          <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
+
         <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
           <ArticleRoundedIcon />
         </Avatar>
@@ -94,6 +124,7 @@ const UnsubscribeForm = () => {
           error={!isValidEmail}
           helperText={!isValidEmail ? "Please enter a valid email address" : ""}
           fullWidth
+          autoComplete="email"
           slotProps={{
             input: {
               type: "email",
@@ -137,7 +168,7 @@ const UnsubscribeForm = () => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
           disabled={!isValidForm()}
-          onClick={handleSubmit}
+          onClick={handleUnsubscribe}
         >
           Unsubscribe
         </Button>

@@ -70,7 +70,7 @@ exports.unsubscribeUser = async (req, res) => {
           .json({ message: "User is already unsubscribed." });
       }
     } else {
-      return res.status(404).json({ message: "User not found." });
+      return res.status(201).json({ message: "User not found." });
     }
   } catch (error) {
     console.error("Error detected during unsubscription:", error);

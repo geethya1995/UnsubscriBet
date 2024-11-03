@@ -7,12 +7,15 @@ import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
-// import { Link } from "react-router-dom";
+import SubscribeService from "../services/SubscribeService";
+import Alert from "@mui/material/Alert";
 
 const SubscribeForm = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [isValid, setIsValid] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -24,9 +27,25 @@ const SubscribeForm = () => {
   // Enable 'Subscribe; button only if the email, name fields are filled correctly
   const isFormValid = isValid && name ? true : false;
 
-  // TODO: Write in a separate service
-  const handleSubscribe = () => {
-    alert("User subscribed successfully!");
+  const handleSubscribe = async () => {
+    const response = await SubscribeService(email, name);
+    if (response.status === 200) {
+      if (response.data.message == "User is already subscribed.") {
+        setSuccessMessage("You are already subscribing our Newsletter!");
+      } else {
+        setSuccessMessage(
+          "Welcome back " +
+            name +
+            "! You successfully subscribed to our Newsletter."
+        );
+      }
+    } else if (response.status === 201) {
+      setSuccessMessage(
+        "Welcome " + name + "! You successfully subscribed to our Newsletter."
+      );
+    } else {
+      setErrorMessage("Error occurred while subscribing. Please try again!");
+    }
   };
 
   return (
@@ -41,6 +60,17 @@ const SubscribeForm = () => {
             alignItems: "center",
           }}
         >
+          {successMessage && (
+            <Alert severity="success" sx={{ width: "100%", mb: 2 }}>
+              {successMessage}
+            </Alert>
+          )}
+          {errorMessage && (
+            <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
+              {errorMessage}
+            </Alert>
+          )}
+
           <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
             <ArticleRoundedIcon />
           </Avatar>
@@ -60,6 +90,7 @@ const SubscribeForm = () => {
               name="name"
               label="Name"
               type="name"
+              autoComplete="name"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -72,6 +103,7 @@ const SubscribeForm = () => {
               value={email}
               onChange={handleEmailChange}
               variant="outlined"
+              autoComplete="email"
               error={!isValid}
               helperText={!isValid ? "Please enter a valid email address" : ""}
               fullWidth
