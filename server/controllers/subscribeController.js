@@ -1,9 +1,12 @@
 const Users = require("../models/user");
 const UserPreferences = require("../models/userPreference");
+require("dotenv").config({ path: "config/.env.development" });
+const jwt = require("jsonwebtoken");
 
 // User subscription controller
 exports.subscribeUser = async (req, res) => {
   const { name, email } = req.body;
+  const jwtSecret = process.env.JWT_SECRET;
 
   try {
     const existingUser = await Users.findOne({ email });
@@ -24,11 +27,14 @@ exports.subscribeUser = async (req, res) => {
     }
 
     // If the user does not exist, create a new user
+    // Create a JWT including the email in the payload to verify the user identity during unsubscribe
+    const token = jwt.sign({ email: email }, jwtSecret);
     const newUser = new Users({ email, name });
     await newUser.save();
     return res.status(201).json({
       message: "User created and subscription activated!",
       user: newUser,
+      token: token,
     });
   } catch (error) {
     console.error(error);
@@ -42,8 +48,13 @@ exports.subscribeUser = async (req, res) => {
 // User unsubscription controller
 exports.unsubscribeUser = async (req, res) => {
   const { email, reasonForUnsubscribing, moreInfo } = req.body;
+  const { user } = req;
 
   try {
+    if (user.email !== email) {
+      return res.status(201).json({ message: "Invalid token for the user" });
+    }
+
     const existingUser = await Users.findOne({ email });
 
     // If the user exists and is subscribing the newsletter

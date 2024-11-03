@@ -12,6 +12,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Alert from "@mui/material/Alert";
 import UnsubscribeService from "../services/UnsubscribeService";
+import { useLocation } from "react-router-dom";
 
 const reasonsList = [
   "Privacy concerns",
@@ -29,6 +30,9 @@ const UnsubscribeForm = () => {
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const location = useLocation();
+  const params = location.search;
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -65,7 +69,8 @@ const UnsubscribeForm = () => {
     const response = await UnsubscribeService(
       email,
       selectedReasons,
-      otherReason
+      otherReason,
+      params
     );
 
     if (response.status === 200) {
@@ -75,6 +80,22 @@ const UnsubscribeForm = () => {
     } else if (response.status === 201) {
       if (response.data.message === "User is already unsubscribed.") {
         setSuccessMessage("You have already unsubscribed from our newsletter!");
+      } else if (response.data.message === "Invalid token for the user") {
+        setErrorMessage(
+          "Unauthorized access detected. Please use your correct email to unsubscribe!"
+        );
+      } else if (
+        response.data.message === "Access denied due to missing token!"
+      ) {
+        setErrorMessage(
+          "Invalid unsubscription URL detected. Request for unsubscription failed. Please contact SportsBet support!"
+        );
+      } else if (
+        response.data.message === "Unauthorized access due to invalid token"
+      ) {
+        setErrorMessage(
+          "Unauthorized access detected. Request for unsubscription failed!"
+        );
       } else {
         setErrorMessage(
           "You have not subscribed to our newsletter with " +
