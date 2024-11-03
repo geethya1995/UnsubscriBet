@@ -21,17 +21,17 @@ const reasonsList = [
   "Other",
 ];
 
-function UnsubscribeForm() {
+const UnsubscribeForm = () => {
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
   const [otherReason, setOtherReason] = useState("");
   const [email, setEmail] = useState("");
-  const [isValid, setIsValid] = useState(true);
+  const [isValidEmail, setIsValidEmail] = useState(false);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
     setEmail(value);
-    setIsValid(emailRegex.test(value));
+    setIsValidEmail(emailRegex.test(value));
   };
 
   const handleReasonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,13 +49,23 @@ function UnsubscribeForm() {
     setOtherReason(event.target.value);
   };
 
+  // Enable 'Subscribe; button only if the email, name fields are filled correctly
+  const isValidForm = () => {
+    const hasSelectedReasons = selectedReasons.length > 0;
+    const otherReasonRequired = selectedReasons.includes("Other")
+      ? otherReason.trim() !== ""
+      : true;
+    return isValidEmail && hasSelectedReasons && otherReasonRequired;
+  };
+
+  // TODO: Handle Submit as a separate service
   const handleSubmit = async () => {
     const unsubscribeData = {
       email: email,
       reasons: [...selectedReasons, otherReason].filter(Boolean),
     };
-    console.log(unsubscribeData.reasons);
-    // alert("User unsubscribed successfully!");
+    console.log(unsubscribeData);
+    alert("User unsubscribed successfully!");
   };
 
   return (
@@ -81,8 +91,8 @@ function UnsubscribeForm() {
           value={email}
           onChange={handleEmailChange}
           variant="outlined"
-          error={!isValid}
-          helperText={!isValid ? "Please enter a valid email address" : ""}
+          error={!isValidEmail}
+          helperText={!isValidEmail ? "Please enter a valid email address" : ""}
           fullWidth
           slotProps={{
             input: {
@@ -90,7 +100,7 @@ function UnsubscribeForm() {
             },
             formHelperText: {
               style: {
-                color: isValid ? "inherit" : "red",
+                color: isValidEmail ? "inherit" : "red",
               },
             },
           }}
@@ -126,6 +136,7 @@ function UnsubscribeForm() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          disabled={!isValidForm()}
           onClick={handleSubmit}
         >
           Unsubscribe
@@ -133,6 +144,6 @@ function UnsubscribeForm() {
       </Box>
     </Container>
   );
-}
+};
 
 export default UnsubscribeForm;

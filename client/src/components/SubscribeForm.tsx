@@ -9,10 +9,10 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 // import { Link } from "react-router-dom";
 
-const Subscribe = () => {
+const SubscribeForm = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [isValid, setIsValid] = useState(true);
+  const [isValid, setIsValid] = useState(false);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -20,6 +20,9 @@ const Subscribe = () => {
     setEmail(value);
     setIsValid(emailRegex.test(value));
   };
+
+  // Enable 'Subscribe; button only if the email, name fields are filled correctly
+  const isFormValid = isValid && name ? true : false;
 
   // TODO: Write in a separate service
   const handleSubscribe = () => {
@@ -88,6 +91,7 @@ const Subscribe = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={!isFormValid}
               onClick={handleSubscribe}
             >
               Subscribe
@@ -99,4 +103,4 @@ const Subscribe = () => {
   );
 };
 
-export default Subscribe;
+export default SubscribeForm;
